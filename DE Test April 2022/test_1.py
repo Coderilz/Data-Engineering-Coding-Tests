@@ -1,3 +1,8 @@
+from rich.console import Console
+from datetime import datetime
+
+console = Console()
+
 # [TODO]: step 1
 # Update the is_log_line function below to skip lines that are not valid log lines.
 # Valid log lines have a timestamp, error type, and message. For example, lines 1, 3,
@@ -9,6 +14,22 @@ def is_log_line(line):
     """Takes a log line and returns True if it is a valid log line and returns nothing
     if it is not.
     """
+    line_split = line.split()
+    if len(line_split) < 4:
+        return None
+    #timestamp
+    date = " ".join([line_split[0], line_split[1]])
+    try:
+        date_obj = datetime.strptime(date, "%d/%m/%Y %H:%M:%S")
+    except:
+        return None
+    #error message
+    if line_split[2] not in ["INFO", "TRACE", "WARNING"]:
+        return None
+    #message
+    if ":" not in line_split[3]:
+        return None
+    
     return True
 
 
@@ -52,8 +73,9 @@ if __name__ == "__main__":
     def test_step_1():
         with open("tests/step1.log") as f:
             test_lines = f.readlines()
+        
         actual_out = list(log_parser_step_1("sample.log"))
-
+        console.print(actual_out)
         if actual_out == test_lines:
             print("STEP 1 SUCCESS")
         else:
