@@ -69,6 +69,45 @@
 # - the dx_number (if available) of the nearest court of the right type
 # - the distance to the nearest court of the right type
 
+import csv
+from rich.console import Console
+import requests as req
+import json
+
+console = Console()
+def csv_to_dict(path:str) -> list[dict]:
+    """Returns a list of dictionaries with csv data"""
+    with open(path) as f:
+        reader = csv.DictReader(f)
+        return list(reader)
+    
+
+def get_closest_court(post_code:str, court_type:str)-> dict:
+    """Given postcode and court type, returns the closest available court"""
+    response = req.get(url=f'https://courttribunalfinder.service.gov.uk/search/results.json?postcode={post_code}',)
+    r_json = response.json()
+    #closest func
+    ordered_data = sorted(r_json, key=lambda x: x['distance'], reverse=False)
+    for court in ordered_data:
+        if court_type in court['types']:
+            return court
+
 if __name__ == "__main__":
     # [TODO]: write your answer here
-    pass
+    #people data
+    data = csv_to_dict('people.csv')
+    
+    req_data = []
+
+    for person in data:
+        closest_court = get_closest_court(person['home_postcode'], person['looking_for_court_type'])
+        req_data.append({
+            'person_name': person['person_name'],
+            'court_type': person['looking_for_court_type'],
+            'home_postcode': person["home_postcode"],
+            'nearest_court': closest_court['name'],
+            'dx_number': closest_court['dx_number'],
+            'distance': closest_court['distance']
+        })
+
+    console.print(req_data)

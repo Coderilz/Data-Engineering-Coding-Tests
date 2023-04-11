@@ -15,13 +15,13 @@ def is_log_line(line):
     if it is not.
     """
     line_split = line.split()
-    console.print(line_split)
+
     if len(line_split) < 4:
         return None
     #timestamp
     date = " ".join([line_split[0], line_split[1]])
     try:
-        date_obj = datetime.strptime(date, "%d/%m/%y %H:%M:%S")
+        datetime.strptime(date, "%d/%m/%y %H:%M:%S")
     except Exception as err:
         print(err.args[0])
         return None
