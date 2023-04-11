@@ -15,13 +15,15 @@ def is_log_line(line):
     if it is not.
     """
     line_split = line.split()
+    console.print(line_split)
     if len(line_split) < 4:
         return None
     #timestamp
     date = " ".join([line_split[0], line_split[1]])
     try:
-        date_obj = datetime.strptime(date, "%d/%m/%Y %H:%M:%S")
-    except:
+        date_obj = datetime.strptime(date, "%d/%m/%y %H:%M:%S")
+    except Exception as err:
+        print(err.args[0])
         return None
     #error message
     if line_split[2] not in ["INFO", "TRACE", "WARNING"]:
@@ -29,7 +31,6 @@ def is_log_line(line):
     #message
     if ":" not in line_split[3]:
         return None
-    
     return True
 
 
@@ -42,7 +43,13 @@ def get_dict(line):
     """Takes a log line and returns a dict with
     `timestamp`, `log_level`, `message` keys
     """
-    pass
+    line_split = line.split()
+    res = {
+        'timestamp': " ".join([line_split[0], line_split[1]]),
+        'log_level': line_split[2],
+        'message': " ".join(line_split[3:])
+    }
+    return res
 
 
 # YOU DON'T NEED TO CHANGE ANYTHING BELOW THIS LINE
@@ -73,9 +80,7 @@ if __name__ == "__main__":
     def test_step_1():
         with open("tests/step1.log") as f:
             test_lines = f.readlines()
-        
         actual_out = list(log_parser_step_1("sample.log"))
-        console.print(actual_out)
         if actual_out == test_lines:
             print("STEP 1 SUCCESS")
         else:
