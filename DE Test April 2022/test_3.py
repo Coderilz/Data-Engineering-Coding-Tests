@@ -9,6 +9,9 @@ def sum_current_time(time_str: str) -> int:
     str_list_of_nums = time_str.split(":")
 
     int_list_of_nums = [int(x) for x in str_list_of_nums]
-    
+
     return sum(int_list_of_nums)
 
+def test_works():
+    time_str = '01:02:03'
+    assert sum_current_time(time_str) == 6

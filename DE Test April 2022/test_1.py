@@ -10,7 +10,7 @@ console = Console()
 # There's no perfect way to do this: just decide what you think is reasonable to get
 # the test to pass. The only thing you are not allowed to do is filter out log lines
 # based on the exact row numbers you want to remove.
-def is_log_line(line):
+def is_log_line(line:str):
     """Takes a log line and returns True if it is a valid log line and returns nothing
     if it is not.
     """
@@ -18,17 +18,17 @@ def is_log_line(line):
 
     if len(line_split) < 4:
         return None
-    #timestamp
+    #timestamp present?
     date = " ".join([line_split[0], line_split[1]])
     try:
         datetime.strptime(date, "%d/%m/%y %H:%M:%S")
     except Exception as err:
         print(err.args[0])
         return None
-    #error message
+    #error message present?
     if line_split[2] not in ["INFO", "TRACE", "WARNING"]:
         return None
-    #message
+    #message present?
     if ":" not in line_split[3]:
         return None
     return True
@@ -43,6 +43,7 @@ def get_dict(line):
     """Takes a log line and returns a dict with
     `timestamp`, `log_level`, `message` keys
     """
+    #This splits up the line and extracts the relevant information
     line_split = line.split()
     res = {
         'timestamp': " ".join([line_split[0], line_split[1]]),
