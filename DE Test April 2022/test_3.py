@@ -6,5 +6,9 @@
 # [TODO]: fix the function
 def sum_current_time(time_str: str) -> int:
     """Expects data in the format HH:MM:SS"""
-    list_of_nums = time_str.split(":")
-    return sum(list_of_nums)
+    str_list_of_nums = time_str.split(":")
+
+    int_list_of_nums = [int(x) for x in str_list_of_nums]
+    
+    return sum(int_list_of_nums)
+
